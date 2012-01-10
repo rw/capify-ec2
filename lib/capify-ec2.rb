@@ -62,6 +62,10 @@ class CapifyEc2
   def self.get_instances_by_role(role)
     filter_instances_by_role(running_instances, role)
   end
+
+  def self.get_instances_by_tags(tags)
+    filter_instances_by_tags(running_instances, tags)
+  end
   
   def self.get_instances_by_region(role, region)
     return unless region
@@ -76,6 +80,16 @@ class CapifyEc2
         server_roles += roles_tag.split(/\s*,\s*/)
       end
       server_roles.member?(role.to_s)
+    end
+  end 
+
+  def self.filter_instances_by_tags(instances, tags)
+    selected_instances = instances.select do |instance|
+      tags.all do |tagkey, tagval|
+        valid = tagval == instance.case_insensitive_tag(tagkey)
+        puts valid.inspect
+        valid
+      end
     end
   end 
   

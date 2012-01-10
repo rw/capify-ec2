@@ -69,6 +69,7 @@ Capistrano::Configuration.instance(:must_exist).load do
     role = role_name_or_hash.is_a?(Hash) ? role_name_or_hash : {:name => role_name_or_hash,:options => {}}
     
     instances = CapifyEc2.get_instances_by_role(role[:name])
+    instances = CapifyEc2.filter_instances_by_tags(instances, role_name_or_hash[:options])
     if role[:options].delete(:default)
       instances.each do |instance|
         define_role(role, instance)
